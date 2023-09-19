@@ -1,5 +1,5 @@
 import sys
-# Agregamos la ruta al directorio principal 'banck_CHURN' al PYTHONPATH para luego poder acceder a los modulos con rutas absolutas que partan de ahi.
+# Agregamos la ruta al directorio principal 'banck_CHURN' al PYTHONPATH para luego poder acceder a los modulos con rutas absolutas.
 sys.path.append(r'C:\Users\Pablo\Documents\GitHub\bank_CHURN')
 import pandas as pd
 import numpy as np
