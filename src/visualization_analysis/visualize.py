@@ -10,6 +10,7 @@ from src.visualization_analysis.analysis import num_var
 data = pd.read_csv('https://raw.githubusercontent.com/psochando/bank_CHURN/main/DATA/raw/Churn_Modelling.csv')
 
 
+# Genera gráficas para visualizar la distribucion de las variables numéricas
 def numvar_dist(df = data):
     
     numvar_list = num_var()
@@ -27,7 +28,7 @@ def numvar_dist(df = data):
     plt.show()
 
 
-
+# Matriz de confusión y curva ROC de un modelo de clasificación binaria
 def plot_model(model, y_test, y_pred, fpr, tpr, cm = True, roc = True):
     
     if cm == True:
