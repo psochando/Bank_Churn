@@ -6,15 +6,16 @@ from sklearn.svm import SVC
 from sklearn.preprocessing import StandardScaler
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import auc, f1_score, precision_score, make_scorer, roc_curve, roc_auc_score, recall_score, accuracy_score
-from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.model_selection import train_test_split,GridSearchCV, cross_val_score
 import joblib
 from src.visualization_analysis.visualize import plot_model
 X = pd.read_csv('https://raw.githubusercontent.com/psochando/bank_CHURN/main/DATA/processed/dataset_completo_predictoras.csv')
 y = pd.read_csv('https://raw.githubusercontent.com/psochando/bank_CHURN/main/DATA/processed/dataset_completo_target.csv')
 
-svc = SVC(C = 3, class_weight = 'balanced', degree = 3, kernel = 'poly', coef0 = 0.5, probability = True)
 
 
+# Permite probar un modelo eliminando las variables y así comparar los resultados
+# Estableciendo plot = True, obtenemos la matriz de confusión y la curva ROC del modelo
 def try_model_without(model, drop_cols = [], X = X, y = y, plot = False):
     
     X = X.drop(columns = drop_cols)
@@ -52,13 +53,11 @@ def try_model_without(model, drop_cols = [], X = X, y = y, plot = False):
     
     if plot == True:
         plot_model(model, y_test, y_pred, fpr, tpr)
-    
-    
-    
-try_model_without(svc, plot = True)
-    
+        
 
-def final_training(model, X = X, y = y, save = False):
+# Una vez hemos elegido un modelo para entrenarlo con todos los datos, lo pasamos como argumento de esta función, que devuelve las métricas principales obtenidas de una validación cruzada
+# save = True guarda el modelo en la carpeta MODELS con el nombre que elijamos
+def final_training(model, X = X, y = y, save = False, name = 'Model'):
 
     pipeline = Pipeline([
         ('scaler', StandardScaler()),
@@ -69,8 +68,16 @@ def final_training(model, X = X, y = y, save = False):
     recall_cross = cross_val_score(pipeline, X, y, cv=5, scoring='recall')
     
     if save == True:
-        joblib.dump(pipeline, r'C:\Users\Pablo\Documents\GitHub\bank_CHURN\MODELS\SVC')
+        joblib.dump(pipeline, rf'C:\Users\Pablo\Documents\GitHub\bank_CHURN\MODELS\{name}')
 
     return (recall_cross.mean(), auc_cross.mean())
 
-final_training(svc, save = True)
+
+svc = SVC(C = 3, class_weight = 'balanced', degree = 3, kernel = 'poly', coef0 = 0.5, probability = True, random_state = 42)
+svc1 = SVC(C = 0.1, class_weight = 'balanced', gamma = 10, kernel = 'rbf', probability = True, random_state = 42)
+
+final_training(svc, save = True, name = 'SVC')  # (0.7520812256106375, 0.8543207822361568)
+final_training(svc1, save = True, name = 'SVC1')  # (0.8134484752131812, 0.8155395439141406)
+# Mejor Recall: SVC1 
+
+
