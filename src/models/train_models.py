@@ -14,7 +14,7 @@ y = pd.read_csv('https://raw.githubusercontent.com/psochando/bank_CHURN/main/DAT
 
 
 
-# Permite probar un modelo eliminando las variables y así comparar los resultados
+# Permite probar un modelo eliminando variables y así comparar los resultados
 # Estableciendo plot = True, obtenemos la matriz de confusión y la curva ROC del modelo
 def try_model_without(model, drop_cols = [], X = X, y = y, plot = False):
     
@@ -33,7 +33,7 @@ def try_model_without(model, drop_cols = [], X = X, y = y, plot = False):
     fpr, tpr, threshold = roc_curve(y_train, probabs_train[:,1])
     roc_auc_train = auc(fpr, tpr)
     recall_train = recall_score(y_train, y_pred_train)
-    # Imprimo el AUC y Recall del train para tener una referencia del rendimiento del modelo en el conjunto de entrenamiento y ver si hay sobreajuste
+    # Imprimo el AUC y Recall del train para comparar con el test y ver si el modelo pudiera estar sobreajustado (en cualquier caso más tarde se someterá a validación cruzada)
     print(f'\nAUC del train: {roc_auc_train}')
     print(f'Recall del train: {recall_train}')
     
@@ -70,14 +70,11 @@ def final_training(model, X = X, y = y, save = False, name = 'Model'):
     if save == True:
         joblib.dump(pipeline, rf'C:\Users\Pablo\Documents\GitHub\bank_CHURN\MODELS\{name}')
 
-    return (recall_cross.mean(), auc_cross.mean())
+    print(f'Recall de {name}: {recall_cross.mean()} \nAUC de {name}: {auc_cross.mean()}')
 
 
 svc = SVC(C = 3, class_weight = 'balanced', degree = 3, kernel = 'poly', coef0 = 0.5, probability = True, random_state = 42)
 svc1 = SVC(C = 0.1, class_weight = 'balanced', gamma = 10, kernel = 'rbf', probability = True, random_state = 42)
 
-final_training(svc, save = True, name = 'SVC')  # (0.7520812256106375, 0.8543207822361568)
-final_training(svc1, save = True, name = 'SVC1')  # (0.8134484752131812, 0.8155395439141406)
-# Mejor Recall: SVC1 
-
-
+final_training(svc, save = False, name = 'SVC')  # Recall: 0.7520812256106375, AUC: 0.8543207822361568
+final_training(svc1, save = False, name = 'SVC1')  # Recall: 0.8134484752131812, AUC: 0.8155395439141406
