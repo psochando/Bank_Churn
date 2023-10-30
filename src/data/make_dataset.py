@@ -5,7 +5,7 @@ import pandas as pd
 from src.visualization_analysis.analysis import dumm_var, num_var, asymmetry, outliers_detector
 data = pd.read_csv('https://raw.githubusercontent.com/psochando/bank_CHURN/main/DATA/raw/Churn_Modelling.csv')
 
-
+data
 
 # Automatiza el tratamiento de outliers para características numéricas, imputando por la mediana cuando la asimetria de la distribucion es "grande" y por la media cuando no
 # Devuelve el dataframe actualizado
