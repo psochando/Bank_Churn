@@ -24,7 +24,7 @@ def main():
     
     # Se crea un archivo con las predicciones del modelo y las respectivas probabilidades
     results = pd.DataFrame({'Prediction': preds, 'Probability_cancels': probs[:, 1]})
-    results.to_csv('output.csv', index = False)
+    results.to_csv(r'output/output.csv', index = False)
     
     
 if __name__ == '__main__':
